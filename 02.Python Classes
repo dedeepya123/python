@@ -1,0 +1,773 @@
+# 02 - Python Classes, Objects and the Type Hierarchy
+
+## Prerequisite
+
+From the previous note:
+
+```text
+Everything in Python is an object.
+
+Object:
+    - Value
+    - Type
+    - Identity
+
+Variable:
+    A name bound to an object.
+
+Reference:
+    A link between a variable name and an object.
+```
+
+Now the natural question is:
+
+> If everything is an object, then every object must be an instance of some class.
+>
+> So what class does an object belong to?
+>
+> Where do its methods and attributes come from?
+
+---
+
+# Every Object is an Instance of a Class
+
+Example:
+
+```python
+x = 10
+
+print(type(x))
+```
+
+Output:
+
+```python
+<class 'int'>
+```
+
+This means:
+
+```text
+10 is an object
+
+10 is an instance of int
+```
+
+Mental Model:
+
+```text
+x
+│
+▼
+10 (object)
+│
+▼
+int (class)
+```
+
+---
+
+Another example:
+
+```python
+s = "hello"
+
+print(type(s))
+```
+
+Output:
+
+```python
+<class 'str'>
+```
+
+Mental Model:
+
+```text
+"hello"
+    │
+    ▼
+   str
+```
+
+---
+
+Another example:
+
+```python
+lst = [1, 2, 3]
+
+print(type(lst))
+```
+
+Output:
+
+```python
+<class 'list'>
+```
+
+Mental Model:
+
+```text
+[1,2,3]
+    │
+    ▼
+   list
+```
+
+---
+
+# Classes Define Attributes and Methods
+
+Consider:
+
+```python
+s = "hello"
+
+s.upper()
+```
+
+Question:
+
+> Where did the `upper()` method come from?
+
+Answer:
+
+```text
+The class str defines upper().
+```
+
+Mental Model:
+
+```text
+Object: "hello"
+
+Instance Of
+     │
+     ▼
+
+Class: str
+
+    upper()
+    lower()
+    split()
+    replace()
+    strip()
+```
+
+When Python sees:
+
+```python
+s.upper()
+```
+
+it looks for `upper()` on the object's class.
+
+---
+
+Another example:
+
+```python
+lst = [1, 2, 3]
+
+lst.append(4)
+```
+
+The method `append()` comes from:
+
+```text
+list class
+```
+
+Mental Model:
+
+```text
+Object: [1,2,3]
+
+Instance Of
+     │
+     ▼
+
+Class: list
+
+    append()
+    extend()
+    pop()
+    remove()
+    sort()
+```
+
+---
+
+# User Defined Classes
+
+We can create our own classes.
+
+```python
+class Person:
+    def greet(self):
+        print("Hello")
+```
+
+Create an object:
+
+```python
+p = Person()
+```
+
+Check its type:
+
+```python
+print(type(p))
+```
+
+Output:
+
+```python
+<class '__main__.Person'>
+```
+
+Mental Model:
+
+```text
+p
+│
+▼
+Person Object
+│
+▼
+Person Class
+```
+
+The object gets its methods from the class.
+
+```python
+p.greet()
+```
+
+Output:
+
+```python
+Hello
+```
+
+---
+
+# The Root of All Classes: object
+
+A surprising fact:
+
+Almost every class in Python ultimately inherits from a class called:
+
+```python
+object
+```
+
+Example:
+
+```python
+class Person:
+    pass
+
+print(Person.__mro__)
+```
+
+Output:
+
+```python
+(<class '__main__.Person'>,
+ <class 'object'>)
+```
+
+Mental Model:
+
+```text
+object
+   ▲
+   │
+Person
+   ▲
+   │
+p
+```
+
+---
+
+# Why Does Every Object Have Common Methods?
+
+Try:
+
+```python
+x = 10
+
+print(x.__str__())
+print(x.__repr__())
+```
+
+or
+
+```python
+s = "hello"
+
+print(s.__str__())
+```
+
+These methods are available because all classes ultimately derive from:
+
+```text
+object
+```
+
+The `object` class provides common behavior that every Python object can use.
+
+---
+
+# Object Hierarchy Examples
+
+Integer:
+
+```text
+10
+│
+▼
+int
+│
+▼
+object
+```
+
+String:
+
+```text
+"hello"
+│
+▼
+str
+│
+▼
+object
+```
+
+List:
+
+```text
+[1,2,3]
+│
+▼
+list
+│
+▼
+object
+```
+
+Dictionary:
+
+```text
+{"a": 1}
+│
+▼
+dict
+│
+▼
+object
+```
+
+---
+
+# The Mind-Blowing Part
+
+Classes Are Also Objects
+
+Consider:
+
+```python
+print(type(int))
+```
+
+Output:
+
+```python
+<class 'type'>
+```
+
+Wait...
+
+We already said:
+
+```text
+10 is an object
+```
+
+Now Python says:
+
+```text
+int is also an object
+```
+
+---
+
+Check a few more:
+
+```python
+print(type(str))
+print(type(list))
+print(type(dict))
+```
+
+Output:
+
+```python
+<class 'type'>
+<class 'type'>
+<class 'type'>
+```
+
+Mental Model:
+
+```text
+10
+│
+▼
+int
+│
+▼
+type
+```
+
+```text
+"hello"
+│
+▼
+str
+│
+▼
+type
+```
+
+```text
+[1,2,3]
+│
+▼
+list
+│
+▼
+type
+```
+
+---
+
+# What is type?
+
+`type` is the class responsible for creating classes.
+
+Just as:
+
+```python
+Person()
+```
+
+creates Person objects,
+
+```python
+type(...)
+```
+
+creates class objects.
+
+Think of it as:
+
+```text
+Object Factory     -> Class
+Class Factory      -> type
+```
+
+Mental Model:
+
+```text
+Object
+   ▲
+   │ created by
+   │
+Class
+   ▲
+   │ created by
+   │
+type
+```
+
+---
+
+# Complete Hierarchy
+
+For an integer:
+
+```text
+Instance
+   │
+   ▼
+10
+   │
+   ▼
+int
+   │
+   ▼
+object
+```
+
+But also:
+
+```text
+int
+ │
+ ▼
+type
+```
+
+Combined:
+
+```text
+10
+│
+▼
+int
+│
+├── inherits from ──► object
+│
+└── instance of ────► type
+```
+
+---
+
+# Real Examples
+
+Example 1
+
+```python
+x = 10
+
+print(type(x))
+```
+
+Output:
+
+```python
+<class 'int'>
+```
+
+Meaning:
+
+```text
+x
+│
+▼
+10
+│
+▼
+int
+```
+
+---
+
+Example 2
+
+```python
+print(type(int))
+```
+
+Output:
+
+```python
+<class 'type'>
+```
+
+Meaning:
+
+```text
+int
+│
+▼
+type
+```
+
+---
+
+Example 3
+
+```python
+class Person:
+    pass
+
+p = Person()
+```
+
+Mental Model:
+
+```text
+p
+│
+▼
+Person
+│
+▼
+object
+```
+
+and
+
+```text
+Person
+│
+▼
+type
+```
+
+---
+
+# Golden Mental Models
+
+### Mental Model 1
+
+```text
+Every value in Python is an object.
+```
+
+---
+
+### Mental Model 2
+
+```text
+Every object is an instance of some class.
+```
+
+---
+
+### Mental Model 3
+
+```text
+Classes define attributes and methods.
+```
+
+Example:
+
+```text
+"hello" gets upper() from str
+
+[1,2,3] gets append() from list
+
+tensor gets reshape() from Tensor
+```
+
+---
+
+### Mental Model 4
+
+```text
+Most classes inherit from object.
+```
+
+```text
+object
+   ▲
+   │
+ int
+ str
+ list
+ dict
+ Person
+ Tensor
+ nn.Module
+```
+
+---
+
+### Mental Model 5
+
+```text
+Classes themselves are objects.
+```
+
+```text
+int
+str
+list
+Person
+```
+
+are all objects.
+
+---
+
+### Mental Model 6
+
+```text
+Classes are instances of type.
+```
+
+```text
+10      -> instance of int
+
+int     -> instance of type
+
+"abc"   -> instance of str
+
+str     -> instance of type
+```
+
+---
+
+# Final Picture
+
+```text
+Variable
+   │
+   ▼
+Object Instance
+   │
+   ▼
+Class
+   │
+   ▼
+object
+
+
+Classes themselves:
+
+Class
+   │
+   ▼
+type
+```
+
+Or even more compactly:
+
+```text
+Variable
+   │
+   ▼
+Object
+   │ instance of
+   ▼
+Class
+   │ inherits from
+   ▼
+object
+
+Class
+   │ instance of
+   ▼
+type
+```
+
+## Golden Rule
+
+```text
+Objects hold data.
+
+Classes define behavior.
+
+object is the root base class.
+
+Classes are also objects.
+
+Classes are instances of type.
+```
